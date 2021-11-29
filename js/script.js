@@ -6,57 +6,92 @@ const remainingGuesses = document.querySelector(".remaining");
 const remainingSpan = document.querySelector(".remaining span");
 const guessMessage = document.querySelector(".message");
 const againBtn = document.querySelector(".play-again");
-
-const word = "magnolia";
+const highlight = document.querySelector(".highlight");
+// const word = "magnolia";
+const word = "b";
 const guessedLetters = [];
 
 // setting placeholders for each letter
 const progressDot = (word) => {
-  const progressDotLetters = [];
-  for (let dots of word) {
-    console.log(progressDotLetters);
-    progressDotLetters.push("●");
-  }
-  inProgress.innerText = progressDotLetters.join("");
+  // empty array to hold the place holder dots
+  const placeholder = [];
+  // loop through word const and replace letters with dots
+  for (let letters of word) placeholder.push("●");
+  inProgress.innerText = placeholder.join("");
 };
+// call function
 progressDot(word);
 
-// guess button event listener
+// Guess Button event
 guessBtn.addEventListener("click", (e) => {
-  // used to prevent page from refreshing
   e.preventDefault();
   guessMessage.innerText = "";
-
-  const guess = inputLetter.value;
-  const goodGuess = validInput(guess);
-  // console.log(goodGuess);
-  if (goodGuess) {
-    makeGuess(guess);
-  }
-  inputLetter.value = "";
+  const input = inputLetter.value;
+  const inputResult = validatePlayerInput(input);
+  // console.log(inputResult);
+  makeGuess(inputResult);
 });
 
-// validate player's input
-const validInput = (input) => {
+// Validate the players input
+const validatePlayerInput = (input) => {
+  // asure only letters get selected
   const acceptedLetter = /[a-zA-Z]/;
+  // asure the input box is not empty
   if (input.length === 0) {
-    guessMessage.innerText = "Please enter letter.";
+    guessMessage.innerText = "Please input a letter.";
+    // asure only one object in the input box
   } else if (input.length > 1) {
-    guessMessage.innerText = "Only one letter please!!";
+    guessMessage.innerText = "Please select only one letter.";
+    // asuring input follows acceptedLetters
   } else if (!input.match(acceptedLetter)) {
-    guessMessage.innerText = "Please enter a letter between A and Z.";
+    guessMessage.innerText = "Letters only please.";
+    // input is valid and allowed to go through
   } else {
     return input;
   }
 };
 
-// capture player's input
-const makeGuess = (guess) => {
-  guess = guess.toUpperCase();
-  if (guessedLetters.includes(guess)) {
-    guessMessage.innerText = "Already guessed that, try again.";
+const makeGuess = (letter) => {
+  letter = letter.toUpperCase();
+  if (guessedLetters.includes(letter)) {
+    guessMessage.innerText = "You have already guessed that, try again.";
   } else {
-    guessedLetters.push(guess);
-    console.log(guessedLetters);
+    guessedLetters.push(letter);
+    showGuessedLetters();
+    updateInProgress(guessedLetters);
+  }
+  // console.log(guessedLetters);
+};
+
+const showGuessedLetters = () => {
+  guessedLettersElement.innerText = "";
+  for (let letter of guessedLetters) {
+    let li = document.createElement("li");
+    li.innerText = letter;
+    guessedLettersElement.append(letter);
+  }
+};
+
+const updateInProgress = (guessedLetters) => {
+  const wordUpper = word.toUpperCase();
+  const wordArray = wordUpper.split("");
+  // console.log(wordArray);
+  const updateWord = [];
+  for (let letter of wordArray) {
+    if (guessedLetters.includes(letter)) {
+      updateWord.push(letter.toUpperCase());
+    } else {
+      updateWord.push("●");
+    }
+  }
+  inProgress.innerText = updateWord.join("");
+  checkIfWon();
+};
+
+const checkIfWon = () => {
+  guessMessage.innerText = "";
+  if (word.toUpperCase() === inProgress.innerText) {
+    guessMessage.classList.add("win");
+    guessMessage.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
   }
 };
