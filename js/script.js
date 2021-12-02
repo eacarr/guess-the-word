@@ -10,7 +10,7 @@ const highlight = document.querySelector(".highlight");
 
 let word = "";
 // const word = "boy";
-const guessedLetters = [];
+let guessedLetters = [];
 let remainingGuesses = 8;
 
 // async function
@@ -46,10 +46,11 @@ getWord();
 guessBtn.addEventListener("click", (e) => {
   e.preventDefault();
   guessMessage.innerText = "";
-  const input = inputLetter.value;
+  let input = inputLetter.value;
   const inputResult = validatePlayerInput(input);
   // console.log(inputResult);
   makeGuess(inputResult);
+  inputLetter.value = "";
 });
 
 // Validate the players input
@@ -112,7 +113,7 @@ const updateInProgress = (guessedLetters) => {
 
 // guess count down
 const countGuessRemain = (guess) => {
-  guessMessage.innerText = "";
+  // guessMessage.innerText = "";
 
   const wordUpper = word.toUpperCase();
   if (!wordUpper.includes(guess)) {
@@ -122,7 +123,7 @@ const countGuessRemain = (guess) => {
     remainingSpan.textContent = `${remainingGuesses} guesses`;
     if (remainingGuesses < 1) {
       guessMessage.textContent = `You've lost. The correct answer was ${word.toUpperCase()}`;
-      againBtn.classList.remove("hide");
+      startOver();
     }
     console.log(guessMessage.textContent);
   } else {
@@ -138,6 +139,28 @@ const checkIfWon = () => {
   if (word.toUpperCase() === inProgress.innerText) {
     guessMessage.classList.add("win");
     guessMessage.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
-    againBtn.classList.remove("hide");
+    startOver();
   }
 };
+
+const startOver = () => {
+  againBtn.classList.remove("hide");
+  guessBtn.classList.add("hide");
+  remaining.classList.add("hide");
+  guessedLettersElement.classList.add("hide");
+};
+
+againBtn.addEventListener("click", () => {
+  guessMessage.classList.remove("win");
+  guessMessage.textContent = "";
+  guessedLettersElement.textContent = "";
+  remainingSpan.textContent = "8 guesses";
+  remainingGuesses = 8;
+  guessedLetters = [];
+  againBtn.classList.add("hide");
+  guessBtn.classList.remove("hide");
+  remaining.classList.remove("hide");
+  guessedLettersElement.classList.remove("hide");
+  getWord();
+  inputLetter.value = "";
+});
