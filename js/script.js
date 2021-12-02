@@ -9,7 +9,6 @@ const againBtn = document.querySelector(".play-again");
 const highlight = document.querySelector(".highlight");
 
 let word = "";
-// const word = "boy";
 let guessedLetters = [];
 let remainingGuesses = 8;
 
@@ -19,7 +18,6 @@ const getWord = async () => {
     `https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt`
   );
   const words = await wordRequest.text();
-  // console.log(data);
   const wordArray = words.split("\n");
   const randomIndex = Math.floor(Math.random() * wordArray.length);
 
@@ -27,7 +25,6 @@ const getWord = async () => {
   word = wordArray[randomIndex].trim();
 
   progressDot(word);
-  console.log(word);
 };
 
 // setting placeholders for each letter
@@ -48,7 +45,6 @@ guessBtn.addEventListener("click", (e) => {
   guessMessage.innerText = "";
   let input = inputLetter.value;
   const inputResult = validatePlayerInput(input);
-  // console.log(inputResult);
   makeGuess(inputResult);
   inputLetter.value = "";
 });
@@ -76,14 +72,12 @@ const makeGuess = (letter) => {
   letter = letter.toUpperCase();
   if (guessedLetters.includes(letter)) {
     guessMessage.innerText = "You have already guessed that, try again.";
-    // console.log(guessMessage.innerText);
   } else {
     guessedLetters.push(letter);
     showGuessedLetters();
     countGuessRemain(letter);
     updateInProgress(guessedLetters);
   }
-  console.log(guessedLetters);
 };
 
 const showGuessedLetters = () => {
@@ -98,7 +92,6 @@ const showGuessedLetters = () => {
 const updateInProgress = (guessedLetters) => {
   const wordUpper = word.toUpperCase();
   const wordArray = wordUpper.split("");
-  // console.log(wordArray);
   const updateWord = [];
   for (let letter of wordArray) {
     if (guessedLetters.includes(letter)) {
@@ -117,7 +110,6 @@ const countGuessRemain = (guess) => {
 
   const wordUpper = word.toUpperCase();
   if (!wordUpper.includes(guess)) {
-    console.log(true);
     guessMessage.textContent = "Not the right letter.";
     remainingGuesses--;
     remainingSpan.textContent = `${remainingGuesses} guesses`;
@@ -125,12 +117,8 @@ const countGuessRemain = (guess) => {
       guessMessage.textContent = `You've lost. The correct answer was ${word.toUpperCase()}`;
       startOver();
     }
-    console.log(guessMessage.textContent);
   } else {
-    console.log(false);
     guessMessage.textContent = "Letter is in the word.";
-
-    console.log(guessMessage.textContent);
   }
 };
 
